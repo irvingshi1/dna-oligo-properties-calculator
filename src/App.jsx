@@ -8,7 +8,9 @@ const App = () => {
 	
 	const [meltingTemperature, setMeltingTemperature] = useState("--");
 	
-	const [gibbsFreeEnergy, setGibbsFreeEnergy] = useState(0);
+	const [gibbsFreeEnergy, setGibbsFreeEnergy] = useState("--");
+	
+	const [gcContent, setGcContent] = useState("--");
 	
 	const calculateDnaOligoProperties = () => {
 		const dnaOligoLength = dnaOligo.length;
@@ -34,9 +36,7 @@ const App = () => {
 			return;
 		}
 		else if(dnaOligoLength < 2) {
-			setMeltingTemperature("--");
-			
-			setGibbsFreeEnergy(0);
+			alert("DNA oligo must have a length of at least 2.");
 			
 			return;
 		}
@@ -134,7 +134,7 @@ const App = () => {
 		
 		const start = dnaOligo[0];
 		
-		const end = dnaOligo[-1];
+		const end = dnaOligo[dnaOligoLength - 1];
 		
 		if(start === "A" || start === "T") {
 			enthalpy += 2.3;
@@ -143,7 +143,7 @@ const App = () => {
 			
 			gibbsFreeEnergyValue += 1.03;
 		}
-		else if(start === "C" || start === "G") {
+		else if(start === "G" || start === "C") {
 			enthalpy += 0.1;
 			
 			entropy -= 2.8;
@@ -158,7 +158,7 @@ const App = () => {
 			
 			gibbsFreeEnergyValue += 1.03;
 		}
-		else if(end === "C" || end === "G") {
+		else if(end === "G" || end === "C") {
 			enthalpy += 0.1;
 			
 			entropy -= 2.8;
@@ -171,6 +171,16 @@ const App = () => {
 		setMeltingTemperature(meltingTemperatureValue.toFixed(3));
 		
 		setGibbsFreeEnergy(gibbsFreeEnergyValue.toFixed(3));
+		
+		let gc = 0;
+		
+		for(let i of dnaOligo) {
+			if(i === "C" || i === "G") {
+				++gc;
+			}
+		}
+		
+		setGcContent((100 * gc / dnaOligoLength).toFixed(3));
 	}
 	
 	return (
@@ -186,6 +196,7 @@ const App = () => {
 			<div>
 				<p>Melting temperature: {meltingTemperature} °C</p>
 				<p>Gibbs free energy: {gibbsFreeEnergy} kcal/mol</p>
+				<p>GC content: {gcContent}%</p>
 			</div>
 		</>
 	)
